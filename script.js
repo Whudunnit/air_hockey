@@ -3,7 +3,8 @@ const w = canvas.width = 700;
 const h = canvas.height = 900;
 document.body.appendChild(canvas);
 const context = canvas.getContext('2d');
-
+const scoreElement = document.getElementById('score');
+const ComputerScoreElement = document.getElementById('computer_score');
 
 const board = () => {
 
@@ -13,6 +14,7 @@ const board = () => {
     context.moveTo(0,h/2);
     context.lineTo(w,h/2);
     context.stroke();
+    
 }
 
 window.addEventListener('mousemove', (e) =>{
@@ -28,6 +30,7 @@ class Player {
         this.prevY = undefined;
         this.dx = undefined;
         this.dy = undefined;
+        this.maxY = h / 2;
     }
 
     draw (){
@@ -44,16 +47,18 @@ class Player {
         this.prevX = this.x;
         this.prevY = this.y;
         this.x = Math.max(Math.min(this.x, w - w*0.05), w*0.05);
-        this.y = Math.max(Math.min(this.y, h - w*0.05), w*0.05);
+        this.y = Math.max(Math.min(this.y, this.maxY - w * 0.05), 0);       
     }
 }
-
+let playerScore = 0;
+let computerScore = 0;
 class Puck {
     constructor(){
         this.x = w/2;
         this.y = h/2;
-        this.dx = 5;
-        this.dy = 5;
+        this.dx = 0;
+        this.dy = 0;
+        this.maxVelocity = 20;
     }
 
     draw(){
@@ -67,15 +72,37 @@ class Puck {
     update(){
         this.x += this.dx;
         this.y += this.dy;
-        this.x = Math.max(Math.min(this.x, w - w*0.04), w*0.04);
-        this.y = Math.max(Math.min(this.y, h - w*0.04), w*0.04);
+        this.dx = Math.max(Math.min(this.dx, this.maxVelocity), -this.maxVelocity);
+        this.dy = Math.max(Math.min(this.dy, this.maxVelocity), -this.maxVelocity);
 
         if(this.x + w*0.04 >= w || this.x - w*0.04 <= 0){
             this.dx *=-1;
         }
 
-        if(this.y + w*0.04 >= h || this.y - w*0.04 <= 0){
-            this.dy *=-1;
+        if(this.y - w*0.04 <= 0){
+            // Increment player's score
+            playerScore++;
+            // Update the score element text content
+            scoreElement.textContent = 'Player score: ' + playerScore;
+            // Reset puck position to the center
+            this.x = w/2;
+            this.y = h/2;
+            this.dx = 0;
+            this.dy = 0;
+            redrawBoard(player, computer);
+        }
+
+        if(this.y + w*0.04 >= h){
+            // Increment player's score
+            computerScore++;
+            // Update the score element text content
+            ComputerScoreElement.textContent = 'Computer score: ' + computerScore;
+            // Reset puck position to the center
+            this.x = w/2;
+            this.y = h/2;
+            this.dx = 0;
+            this.dy = 0;
+            redrawBoard(player, computer);
         }
 
         // Collision
@@ -125,8 +152,8 @@ class Computer {
     constructor(){
         this.x = w/2;
         this.y = h/10;
-        this.dy = 3;
-        this.dy = 3;
+        this.dy = 0;
+        this.dy = 0;
         this.defaultPosition = { x: this.x, y: this.y };
     }
 
@@ -149,15 +176,15 @@ class Computer {
     }
 
     strike(){
-        const relativeX = puck.x - this.x;
-        const relativeY = puck.y - this.y
-        const theta = Math.atan(relativeX/relativeY);
-        const vector = 10;
-        this.dx = vector*Math.sin(theta);
-        this.dy = vector*Math.cos(theta);
+        const dx = puck.x - this.x-0.01;
+        const dy = puck.y - this.y-0.01;
+        const angle = Math.atan2(dy, dx)-0.01;
 
-        this.x += this.dx;
-        this.y += this.dy;
+
+        const speed = 25;
+
+        this.x += Math.cos(angle) * speed-0.01;
+        this.y += Math.sin(angle) * speed-0.01;
     }
 
     return(){
@@ -168,14 +195,20 @@ class Computer {
     }
 }
 
+function redrawBoard() {
+    context.clearRect(0, 0, w, h);
+    board();
+    player.draw();
+    computer.draw();
+}
+
 const player = new Player;
 const puck = new Puck;
 const computer = new Computer;
 
 function animate(){
-    
-    context.clearRect(0,0,w,h);
-    board();
+
+    redrawBoard();
     puck.update();
     player.update();
     computer.update();

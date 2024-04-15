@@ -16,3 +16,6 @@ canvas{
   border-style: solid;
   cursor: none;
 }
+.score{
+  flex: auto;
+}
