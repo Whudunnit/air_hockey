@@ -16,6 +16,25 @@ canvas{
   border-style: solid;
   cursor: none;
 }
-.score{
-  flex: auto;
+
+#resetButton {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 10px; 
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  margin-left: -50px;
+}
+
+#resetButton:hover {
+  background-color: #45a049;
+}
+
+#text{
+  margin-left: -100px;
+  margin-right: 100px;
 }
