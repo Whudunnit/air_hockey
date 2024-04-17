@@ -7,10 +7,10 @@ body{
   display:  flex;
   justify-content: center;
   background-color: hsl(221, 44%, 46%);
+  overflow: hidden;
 }
 
 canvas{
-  background-color: hsl(0, 100%, 100%);
   margin-top: 15px;
   margin-bottom: 15px;
   border-style: solid;

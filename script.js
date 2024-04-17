@@ -49,13 +49,14 @@ class Player {
 
 let playerScore = 0;
 let computerScore = 0;
+
 class Puck {
     constructor(){
         this.x = w/2;
         this.y = h/2;
         this.dx = 0;
         this.dy = 0;
-        this.maxVelocity = 20;
+        this.maxVelocity = 10;
     }
 
     draw(){
@@ -87,6 +88,7 @@ class Puck {
                     window.alert("You Won!");
                     playerScore = 0;
                     computerScore = 0;
+                    ComputerScoreElement.textContent = 'Computer score: ' + computerScore;
                 }
                 scoreElement.textContent = 'Player score: ' + playerScore;
                 this.x = w/2;
@@ -103,6 +105,7 @@ class Puck {
                     window.alert("The Computer Won!");
                     playerScore = 0;
                     computerScore = 0;
+                    scoreElement.textContent = 'Player score: ' + playerScore;
                 }
                 ComputerScoreElement.textContent = 'Computer score: ' + computerScore;
                 this.x = w/2;
@@ -151,8 +154,8 @@ class Puck {
         }
 
         // Friction
-        this.dx *= 0.975;
-        this.dy *= 0.975;
+        this.dx *= 0.99;
+        this.dy *= 0.99;
     }
 }
 
@@ -189,7 +192,7 @@ class Computer {
         const angle = Math.atan(dy, dx);
 
 
-        const speed = 20;
+        const speed = 15;
 
         this.x += Math.cos(angle) * speed;
         this.y += Math.sin(angle) * speed;
