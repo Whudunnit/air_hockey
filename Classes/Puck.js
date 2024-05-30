@@ -32,8 +32,9 @@ class Puck {
         if(this.y - w*0.04 < 0){
             if(this.x > w/3 && this.x < 2*w/3){
                 playerScore++;
-                if(playerScore == 11){
+                if(playerScore === 7){
                     window.alert("You Won!");
+                    handleWin();
                     playerScore = 0;
                     computerScore = 0;
                     ComputerScoreElement.textContent = 'Computer score: ' + computerScore;
@@ -49,7 +50,7 @@ class Puck {
         else if(this.y + w*0.04 > h){
             if(this.x >w/3 && this.x < 2*w/3){
                 computerScore++;
-                if(computerScore == 11){
+                if(computerScore === 7){
                     window.alert("The Computer Won!");
                     playerScore = 0;
                     computerScore = 0;
