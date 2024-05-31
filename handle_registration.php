@@ -1,13 +1,23 @@
 <?php
-
 require('connect.php');
 
-$kapcsolat
-    ->prepare("INSERT INTO felhasznalok (felhasznalonev, jelszo) VALUES (:felhasznalonev, :jelszo)")
-    ->execute([
-        'felhasznalonev' => $_POST["username"],
-        'jelszo' => md5($_POST["password"]),
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST["username"];
+    $password = $_POST["password"];
+
+    $stmt = $kapcsolat->prepare("SELECT COUNT(*) FROM felhasznalok WHERE felhasznalonev = :username");
+    $stmt->execute(['username' => $username]);
+    if ($stmt->fetchColumn() > 0) {
+        echo 'Username is taken!';
+        exit;
+    }
+
+    $stmt = $kapcsolat->prepare("INSERT INTO felhasznalok (felhasznalonev, jelszo, score) VALUES (:felhasznalonev, :jelszo, 0)");
+    $stmt->execute([
+        'felhasznalonev' => $username,
+        'jelszo' => md5($password),
     ]);
 
-echo "Sikeres regisztráció";
-header("Location: index.php");
+    echo 'Sucsessfull registration!';
+    header('index.php');
+}

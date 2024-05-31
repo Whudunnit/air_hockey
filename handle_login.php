@@ -11,8 +11,6 @@ $stmt->execute([
 
 $user = $stmt->fetchAll();
 
-// var_dump( $user );
-
 if( $user[0]["id"] != null ) {
     echo "sikeres bejelentkezés";
     $_SESSION["id"] = $user[0]["id"];
